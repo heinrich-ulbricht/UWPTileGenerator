@@ -65,7 +65,14 @@
 					<ButtonText>Generate UWP Splash</ButtonText>
 				</Strings>
 			</Button>
-		</Buttons>
+
+      <Button guid="guidUWPTileGeneratorCommandPackageCmdSet" id="UWPBadgeGeneratorCommandId" priority="0x0300" type="Button">
+        <Parent guid="guidUWPTileGeneratorCommandPackageCmdSet" id="MyMenuGroup" />
+        <Strings>
+          <ButtonText>Generate UWP Badge Logo (for notifications)</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
 
 		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
 		<Bitmaps>
@@ -88,7 +95,8 @@
 			<IDSymbol name="MyMenuGroup" value="0x1020" />
 			<IDSymbol name="UWPTileGeneratorCommandId" value="0x0100" />
 			<IDSymbol name="UWPSplashGeneratorCommandId" value="0x0200" />
-		</GuidSymbol>
+      <IDSymbol name="UWPBadgeGeneratorCommandId" value="0x0300" />
+    </GuidSymbol>
 
 		<GuidSymbol name="icons" value="{C552999B-27EE-4B3F-A10F-8098C9D8F848}">
 			<IDSymbol name="image1" value="1" />

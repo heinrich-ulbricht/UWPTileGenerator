@@ -1,3 +1,7 @@
+UWP Tile Generator V2.3
+======================================================
+- Supports Badge Logo generation
+
 UWP Tile Generator V2.1
 ======================================================
 - Bug fixes on SVG images

@@ -49,6 +49,11 @@ namespace UWPTileGenerator
         public const int UwpSplashCommandId = 0x0200;
 
         /// <summary>
+        /// The uwp badge command identifier.
+        /// </summary>
+        public const int UwpBadgeCommandId = 0x0300;
+
+        /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("b40237da-1c50-4dc7-898d-21c4e08d9b99");
@@ -89,6 +94,10 @@ namespace UWPTileGenerator
             var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
+                var badgeCommandId = new CommandID(CommandSet, UwpBadgeCommandId);
+                var badgeMenuItem = new MenuCommand(GenerateBadgeTiles, badgeCommandId);
+                commandService.AddCommand(badgeMenuItem);
+
                 var splashCommandId = new CommandID(CommandSet, UwpSplashCommandId);
                 var splashMenuItem = new MenuCommand(GenerateSplashTiles, splashCommandId);
                 commandService.AddCommand(splashMenuItem);
@@ -150,6 +159,32 @@ namespace UWPTileGenerator
                     _outputWindow.OutputString($"Added {newImagePath} to the project \n");
                 });
             }, PackageManifestEditor.ManipulatePackageManifestForSplash);
+
+            _outputWindow.OutputString("Splash generation complete. \n");
+        }
+
+        /// <summary>
+        /// Generates Badge images.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <exception cref="Exception">No file was selected</exception>
+        private void GenerateBadgeTiles(object sender, EventArgs e)
+        {
+            TileCallback((path, project) =>
+            {
+                var selectedFileName = Path.GetFileName(path);
+
+                ImageGeneration.BadgeSizes.Keys.AsParallel().ForAll(i =>
+                {
+                    // I don't resize the selected file.
+                    if (selectedFileName == i) return;
+
+                    var newImagePath = ImageGeneration.GenerateImage(path, i);
+                    project.ProjectItems.AddFromFile(newImagePath);
+                    _outputWindow.OutputString($"Added {newImagePath} to the project \n");
+                });
+            }, PackageManifestEditor.ManipulatePackageManifestForBadge);
 
             _outputWindow.OutputString("Splash generation complete. \n");
         }

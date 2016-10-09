@@ -33,12 +33,21 @@ namespace UWPTileGenerator
         public static Dictionary<string, Size> SplashSizes { get; } = new Dictionary<string, Size>();
 
         /// <summary>
+        /// Gets or sets the badge sizes.
+        /// </summary>
+        /// <value>
+        /// The badge sizes.
+        /// </value>
+        public static Dictionary<string, Size> BadgeSizes { get; } = new Dictionary<string, Size>();
+
+        /// <summary>
         /// Initializes the <see cref="ImageGeneration"/> class.
         /// </summary>
         static ImageGeneration()
         {
             PopulateTileSizes();
             PopulateSplashSizes();
+            PopulateBadgeSizes();
         }
 
         /// <summary>
@@ -118,6 +127,20 @@ namespace UWPTileGenerator
         }
 
         /// <summary>
+        /// Populates the badge sizes dictionary.
+        /// </summary>
+        private static void PopulateBadgeSizes()
+        {
+            BadgeSizes.Clear();
+
+            BadgeSizes.Add("Badge24x24Logo.scale-100.png", new Size(24, 24));
+            BadgeSizes.Add("Badge24x24Logo.scale-125.png", new Size(30, 30));
+            BadgeSizes.Add("Badge24x24Logo.scale-150.png", new Size(36, 36));
+            BadgeSizes.Add("Badge24x24Logo.scale-200.png", new Size(48, 48));
+            BadgeSizes.Add("Badge24x24Logo.scale-400.png", new Size(96, 96));
+        }
+
+        /// <summary>
         /// Generates the tiles.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -125,7 +148,15 @@ namespace UWPTileGenerator
         /// <returns></returns>
         public static string GenerateImage(string path, string sizeKey)
         {
-            var size = sizeKey.StartsWith("Splash") ? SplashSizes[sizeKey] : TileSizes[sizeKey];
+            Dictionary<string, Size> sizeDictToUse = null;
+            if (sizeKey.StartsWith("Splash"))
+                sizeDictToUse = SplashSizes;
+            else if (sizeKey.StartsWith("Badge"))
+                sizeDictToUse = BadgeSizes;
+            else 
+                sizeDictToUse = TileSizes;
+
+            var size = sizeDictToUse[sizeKey];
             double xMarginSize = 1;
             double yMarginSize = 1;
 

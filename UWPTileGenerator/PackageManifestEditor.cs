@@ -46,6 +46,33 @@ namespace UWPTileGenerator
         }
 
         /// <summary>
+        /// Manipulates the package manifest for badge.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="directory">The directory.</param>
+        public static void ManipulatePackageManifestForBadge(string path, string directory)
+        {
+            var xdocument = XDocument.Parse(File.ReadAllText(path));
+            var xmlNamespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
+
+            var visualElemment = xdocument.Descendants(XName.Get("VisualElements", xmlNamespace)).FirstOrDefault();
+            if (visualElemment != null)
+            {
+                var lockScreen = xdocument.Descendants(XName.Get("LockScreen", xmlNamespace)).FirstOrDefault();
+                if (lockScreen == null)
+                {
+                    visualElemment.Add(new XElement(XName.Get("LockScreen", xmlNamespace)));
+                    lockScreen = xdocument.Descendants(XName.Get("LockScreen", xmlNamespace)).FirstOrDefault();
+                }
+
+                // must set this value if badge logo is configured; two possible values here: "badge" and "badgeAndTileText"
+                lockScreen.AddAttribute("Notification", $@"badge");
+                lockScreen.AddAttribute("BadgeLogo", $@"{directory}Badge24x24Logo.png");
+                xdocument.Save(path);
+            }
+        }
+
+        /// <summary>
         /// Manipulates the package manifest for tiles.
         /// </summary>
         /// <param name="path">The path.</param>
